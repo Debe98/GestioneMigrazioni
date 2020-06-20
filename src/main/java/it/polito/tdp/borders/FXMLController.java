@@ -6,8 +6,10 @@ package it.polito.tdp.borders;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.borders.model.Country;
 import it.polito.tdp.borders.model.CountryAndNumber;
 import it.polito.tdp.borders.model.Model;
 import javafx.event.ActionEvent;
@@ -30,7 +32,7 @@ public class FXMLController {
     private TextField txtAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxNazione"
-    private ComboBox<?> boxNazione; // Value injected by FXMLLoader
+    private ComboBox<Country> boxNazione; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -43,6 +45,7 @@ public class FXMLController {
 			int anno = Integer.parseInt(annoS);
 
 			model.creaGrafo(anno);
+			boxNazione.getItems().addAll(model.getVertex());
 			
 			List<CountryAndNumber> list = model.getCountryAndNumber();
 
@@ -64,7 +67,23 @@ public class FXMLController {
 
     @FXML
     void doSimula(ActionEvent event) {
-
+    	if (boxNazione.getItems().isEmpty()) {
+    		txtResult.setText("Prima crea il grafo!");
+    		return;
+    	}
+    	if (boxNazione.getValue() == null) {
+    		txtResult.setText("Devi scegliere un opzione");
+    		return;
+    	}
+    	
+    	model.simula(boxNazione.getValue());
+    	txtResult.setText("Impiegati "+model.getTempo()+" passi\n");
+    	Map <Country, Integer> popolazoni = model.getPopStati();
+    	
+    	for (Country c : popolazoni.keySet()) {
+    		txtResult.appendText(c+": "+popolazoni.get(c)+"\n");
+    	}
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

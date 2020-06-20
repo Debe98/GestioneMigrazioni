@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -17,10 +18,11 @@ public class Model {
 	
 	private Graph<Country, DefaultEdge> graph ;
 	private Map<Integer,Country> countriesMap ;
+	private Simulazione sim;
 	
 	public Model() {
 		this.countriesMap = new HashMap<>() ;
-
+		sim = new Simulazione();
 	}
 	
 	public void creaGrafo(int anno) {
@@ -50,6 +52,26 @@ public class Model {
 		}
 		Collections.sort(list);
 		return list ;
+	}
+
+	public Set <Country> getVertex() {
+		return graph.vertexSet();
+	}
+	
+	public void simula(Country c) {
+		if(this.graph != null) {
+			sim.setGrafo(this.graph);
+			sim.setStatoIniziale(c);
+			sim.run();
+		}
+	}
+	
+	public Map <Country, Integer> getPopStati() {
+		return sim.getPopolazione();
+	}
+	
+	public int getTempo () {
+		return sim.getPassoCorrente();
 	}
 
 }
